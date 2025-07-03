@@ -29,14 +29,14 @@ const Header = () => {
     WebkitTextFillColor: 'transparent',
     marginLeft: '2px'
   }}>
-    Glo<span style={{
+    ne<span style={{
       display: 'inline-block',
       transform: 'rotate(-15deg)',
       fontWeight: 700,
       color: '#7b2cbf', // Visible "x" on white
       WebkitTextFillColor: 'initial',
       background: 'none'
-    }}>w</span>
+    }}>x</span>
   </span>
 </Link>
 

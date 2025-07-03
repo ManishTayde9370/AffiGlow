@@ -1,30 +1,27 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navigate, Route, Routes } from "react-router-dom";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { Spinner } from "react-bootstrap";
+
+// Component Imports
 import Login from "./components/Login";
 import Home from "./components/Home";
 import AppLayout from "./components/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import Logout from "./pages/Logout";
 import Register from "./components/Register";
-import { useDispatch, useSelector } from "react-redux";
 import UserLayout from "./layout/UserLayout";
+import ManageUsers from "./pages/users/ManageUsers"; // ✅ FIXED: Make sure this matches actual filename
+import ProtectedRoute from "./rbac/ProtectedRoute";
+import UnauthorizedAccess from "./components/UnauthorizedAccess";
+
 
 function App() {
-  // const [userDetails, setUserDetails]=useState(null);
   const userDetails = useSelector((state) => state.userDetails);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-
-  // const updateUserDetails = (updatedData) => {
-  //   // setUserDetails(updatedData);
-  //   dispatch({
-  //     type: "SET_USER",
-  //     payload: updatedData,
-  //   });
-  // };
 
   const isUserLoggedIn = async () => {
     try {
@@ -35,34 +32,42 @@ function App() {
           withCredentials: true,
         }
       );
-      // updateUserDetails(response.data.userDetails);
       dispatch({
-        type:'SET_USER',
-        payload:response.data.userDetails
+        type: "SET_USER",
+        payload: response.data.userDetails,
       });
     } catch (error) {
-      console.error("User not loggedin", error);
+      console.error("User not logged in", error);
+    } finally {
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     isUserLoggedIn();
   }, []);
+
+  if (loading) {
+    return <Spinner animation="border" variant="primary" />;
+  }
 
   return (
     <Routes>
       <Route
         path="/"
         element={
-          userDetails ? 
-          <UserLayout>
-            <Navigate to='/dashboard'/>
-          </UserLayout>: (
+          userDetails ? (
+            <UserLayout>
+              <Navigate to="/dashboard" />
+            </UserLayout>
+          ) : (
             <AppLayout>
               <Home />
             </AppLayout>
           )
         }
       />
+
       <Route
         path="/login"
         element={
@@ -70,22 +75,53 @@ function App() {
             <Navigate to="/dashboard" />
           ) : (
             <AppLayout>
-              <Login/>
+              <Login />
             </AppLayout>
           )
         }
       />
+
       <Route
         path="/dashboard"
         element={
-          userDetails ? 
-          <UserLayout>
-            <Dashboard/>
-          </UserLayout> : (
+          userDetails ? (
+            <UserLayout>
+              <Dashboard />
+            </UserLayout>
+          ) : (
             <Navigate to="/login" />
           )
         }
       />
+
+      <Route
+        path="/users"
+        element={
+          userDetails ? (
+            <ProtectedRoute roles={["admin"]}>
+              <UserLayout>
+                <ManageUsers />
+              </UserLayout>
+            </ProtectedRoute>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+
+      <Route
+        path="/unauthorized-access"
+        element={
+          userDetails ? (
+            <UserLayout>
+              <UnauthorizedAccess />
+            </UserLayout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+
       <Route
         path="/logout"
         element={
@@ -96,19 +132,22 @@ function App() {
           )
         }
       />
+
       <Route
         path="/error"
         element={
-          userDetails ? 
-          <UserLayout>
-            <Error/>
-          </UserLayout>: (
+          userDetails ? (
+            <UserLayout>
+              <Error />
+            </UserLayout>
+          ) : (
             <AppLayout>
               <Error />
             </AppLayout>
           )
         }
       />
+
       <Route
         path="/register"
         element={
