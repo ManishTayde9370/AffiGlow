@@ -31,6 +31,7 @@ function LinkDashboard() {
     } catch (error) {
       setErrors({ message: "Unable to fetch links at the moment, please try again" });
     }
+    
   };
 
   useEffect(() => {
@@ -136,7 +137,14 @@ function LinkDashboard() {
       fetchLinks();
       handleModalClose();
     } catch (error) {
+      if (error.response?.data?.code === "INSUFFICIENT_FUNDS") {
+        setErrors({ message: `You do not have enough credits to perform this action.
+          Add funds to your account using Manage Payments option.` });
+      } else {
       setErrors({ message: "Something went wrong, please try again" });
+    }
+  }finally {
+      handleModalClose();
     }
   };
 
