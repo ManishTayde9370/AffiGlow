@@ -7,15 +7,46 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+dist-ssr/
+.next/
+out/
+temp/
+temp-ssr/
+
+# Cache
+.cache/
+.next/
+coverage/
+.nyc_output/
+.vite/
+vite.config.ts.timestamp
+
+# Environment files
+.env
+.env.*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,3 +54,38 @@ dist-ssr
 *.sln
 *.sw?
 
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Misc
+*.tgz
+*.bak
+*.orig
+*.rej
+
+# Firebase / Netlify / Vercel deployment configs
+.firebase/
+.firebaserc
+.netlify/
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+
+# Mac system files
+*.DS_Store
+
+# Local development SSL certs
+*.pem
+
+# Parcel cache
+.parcel-cache
+
+# SASS cache
+.sass-cache/
+
+# Storybook
+storybook-static/
