@@ -30,6 +30,10 @@ const UsersSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Users',
         index:true
+    },
+    credits:{
+        type:Number,
+        default:0
     }
 });
 

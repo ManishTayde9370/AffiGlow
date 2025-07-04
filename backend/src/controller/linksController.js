@@ -4,6 +4,13 @@ const linksController={
     create:async(request,response)=>{
         const {campaign_title,original_url,category}=request.body;
         try{
+
+            const user= await Users.findById({_id: request.user._id});
+            if(user.credits < 1){
+                return response.status(400).json({message: 'Insufficient credits'});
+            }
+
+
             const link=new Links({
                 campaignTitle: campaign_title,
                 originalUrl: original_url,
@@ -11,7 +18,13 @@ const linksController={
                 user: request.user.role === 'admin'? request.user.id: request.user.adminId
             });
 
+
             await link.save();
+
+            user.credits -= 1; // Deduct one credit for creating a link
+            await user.save();
+
+            
             response.status(200).json({
                 data:{id: link._id},
                 message:'Link Created'

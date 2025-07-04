@@ -6,9 +6,11 @@ const cors=require('cors');
 const authRoutes=require('./src/routes/authRoutes');
 const linksRoutes = require('./src/routes/linksRoutes');
 const userRoutes = require("./src/routes/userRoutes")
+const payementsRoutes = require('./src/routes/payementRoutes');
 
 const cookieParser = require('cookie-parser');
 const { default: mongoose } = require('mongoose');
+
 
 app.use(express.json()); //Middleware
 app.use(cookieParser());
@@ -28,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/auth',authRoutes);
 app.use('/links',linksRoutes);
 app.use('/users',userRoutes);
+app.use('/payments',payementsRoutes);
 
 const PORT=5000;
 

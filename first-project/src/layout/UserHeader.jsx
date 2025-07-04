@@ -43,6 +43,11 @@ function UserHeader() {
                                         Manage Users
                                     </Link>
                                 </li>
+                                <li>
+                                    <Link className='dropdown-item' to='/manage-payments'>
+                                        Payments
+                                    </Link>
+                                </li>
                             </Can>
                                 <hr className='m-0'/>
                             <li>

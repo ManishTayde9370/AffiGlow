@@ -13,10 +13,11 @@ import Dashboard from "./pages/Dashboard";
 import Logout from "./pages/Logout";
 import Register from "./components/Register";
 import UserLayout from "./layout/UserLayout";
-import ManageUsers from "./pages/users/ManageUsers"; // ✅ FIXED: Make sure this matches actual filename
+import ManageUsers from "./pages/users/ManageUsers";
 import ProtectedRoute from "./rbac/ProtectedRoute";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
-
+import ManagePayments from "./payments/ManagePayments";
+import Error from "./pages/Error"; // ✅ Error Page Import
 
 function App() {
   const userDetails = useSelector((state) => state.userDetails);
@@ -28,16 +29,14 @@ function App() {
       const response = await axios.post(
         "http://localhost:5000/auth/is-user-logged-in",
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       dispatch({
         type: "SET_USER",
         payload: response.data.userDetails,
       });
     } catch (error) {
-      console.error("User not logged in", error);
+      console.error("User not logged in:", error?.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -48,18 +47,21 @@ function App() {
   }, []);
 
   if (loading) {
-    return <Spinner animation="border" variant="primary" />;
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" variant="primary" />
+      </div>
+    );
   }
 
   return (
     <Routes>
+      {/* Public Home or Redirect to Dashboard */}
       <Route
         path="/"
         element={
           userDetails ? (
-            <UserLayout>
-              <Navigate to="/dashboard" />
-            </UserLayout>
+            <Navigate to="/dashboard" />
           ) : (
             <AppLayout>
               <Home />
@@ -68,6 +70,7 @@ function App() {
         }
       />
 
+      {/* Login */}
       <Route
         path="/login"
         element={
@@ -81,6 +84,7 @@ function App() {
         }
       />
 
+      {/* Dashboard */}
       <Route
         path="/dashboard"
         element={
@@ -94,6 +98,7 @@ function App() {
         }
       />
 
+      {/* Manage Users - Admin Only */}
       <Route
         path="/users"
         element={
@@ -109,6 +114,7 @@ function App() {
         }
       />
 
+      {/* Unauthorized Access */}
       <Route
         path="/unauthorized-access"
         element={
@@ -122,17 +128,13 @@ function App() {
         }
       />
 
+      {/* Logout */}
       <Route
         path="/logout"
-        element={
-          userDetails ? (
-            <Logout />
-          ) : (
-            <Navigate to="/login" />
-          )
-        }
+        element={userDetails ? <Logout /> : <Navigate to="/login" />}
       />
 
+      {/* Error */}
       <Route
         path="/error"
         element={
@@ -148,11 +150,36 @@ function App() {
         }
       />
 
+      {/* Register */}
       <Route
         path="/register"
         element={
           <AppLayout>
             <Register />
+          </AppLayout>
+        }
+      />
+
+      {/* Manage Payments */}
+      <Route
+        path="/manage-payments"
+        element={
+          userDetails ? (
+            <UserLayout>
+              <ManagePayments />
+            </UserLayout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
+
+      {/* Fallback for unknown routes */}
+      <Route
+        path="*"
+        element={
+          <AppLayout>
+            <Error />
           </AppLayout>
         }
       />
