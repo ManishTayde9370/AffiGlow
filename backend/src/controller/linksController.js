@@ -1,4 +1,6 @@
 const Links = require("../model/Links");
+const Users = require('../model/Users');
+
 
 const linksController={
     create:async(request,response)=>{
