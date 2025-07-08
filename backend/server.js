@@ -8,12 +8,20 @@ const linksRoutes = require('./src/routes/linksRoutes');
 const userRoutes = require("./src/routes/userRoutes")
 const payementsRoutes = require('./src/routes/payementRoutes');
 
+
 const cookieParser = require('cookie-parser');
 const { default: mongoose } = require('mongoose');
 
 
-app.use(express.json()); //Middleware
 app.use(cookieParser());
+
+app.use((request, response,next)=>{
+    if(request.originalUrl.startsWith('/payments/webhook')){
+        return next();
+    }
+    express.json()(request,response,next);
+});
+
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log('Database connected'))

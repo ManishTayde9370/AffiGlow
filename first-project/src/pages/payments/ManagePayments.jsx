@@ -1,12 +1,27 @@
-import { SET_USER } from '../redux/actions';
-import { CREDIT_PACKS } from '../payments';
+// import { SET_USER } from '../redux/actions';
+import { CREDIT_PACKS } from '../../payments';
 import { useState } from 'react';
 import axios from 'axios';
-import { serverEndpoint } from '../config';
+// import { serverEndpoint } from '../config';
 import { useDispatch, useSelector } from 'react-redux';
+// import Subscription from '../pages/payments/Subscription';
+// import PurchaseCredit from '../pages/payments/PurchaseCredit';
+import { SET_USER } from '../../redux/actions';
+import { serverEndpoint } from '../../config';
+import Subscription from './Subscription';
+import PurchaseCredit from './PurchaseCredit';
+
 
 function ManagePayments() {
-    const user = useSelector((state) => state.userDetails);
+    
+     const userDetails=useSelector((state)=>state.userDetails);
+
+    if(userDetails.subscription?.status === 'active'){
+        return <Subscription/>;
+    }else{
+        return <PurchaseCredit/>;
+    }
+    // const user = useSelector((state) => state.userDetails);
     const [error, setError] = useState({});
     const [message, setMessage] = useState(null);
     const [loading, setLoading] = useState(false);

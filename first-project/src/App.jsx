@@ -16,8 +16,9 @@ import UserLayout from "./layout/UserLayout";
 import ManageUsers from "./pages/users/ManageUsers";
 import ProtectedRoute from "./rbac/ProtectedRoute";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
-import ManagePayments from "./payments/ManagePayments";
+// import ManagePayments from "./payments/ManagePayments";
 import Error from "./pages/Error"; // ✅ Error Page Import
+import ManagePayments from "./pages/payments/ManagePayments";
 
 function App() {
   const userDetails = useSelector((state) => state.userDetails);

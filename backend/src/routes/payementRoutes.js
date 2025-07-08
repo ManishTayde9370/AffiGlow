@@ -1,15 +1,24 @@
 const express = require('express');
 const authMiddleware = require('../middleware/authMiddleware');
-const authorize = require('../middleware/authorizeMiddleware'); 
+const authorize = require('../middleware/authorizeMiddleware');
 const paymentController = require('../controller/paymentController');
 
 const router = express.Router();
 
-// Apply authentication middleware
+router.post('/webhook', express.raw({ type: 'application/json' }),
+    paymentController.handleWebhookEvent);
 router.use(authMiddleware.protect);
+
+
+
+
 
 // Payment routes with authorization
 router.post('/create-order', authorize('payment:create'), paymentController.createOrder);
 router.post('/verify-order', authorize('payment:create'), paymentController.verifyOrder);
+
+router.post('/create-subscription', authorize('payment:create'), paymentController.createSubscription);
+router.post('/verify-subscription', authorize('payment:create'), paymentController.verifySubscription);
+router.post('/cancel-subscription', authorize('payment:create'), paymentController.cancelSubscription);
 
 module.exports = router;
