@@ -19,6 +19,7 @@ import UnauthorizedAccess from "./components/UnauthorizedAccess";
 // import ManagePayments from "./payments/ManagePayments";
 import Error from "./pages/Error"; // ✅ Error Page Import
 import ManagePayments from "./pages/payments/ManagePayments";
+import AnalyticsDashboard from "./components/links/AnalyticsDashboard";
 
 function App() {
   const userDetails = useSelector((state) => state.userDetails);
@@ -174,6 +175,13 @@ function App() {
           )
         }
       />
+
+      <Route path="/analytics/:linkId" element={userDetails ?
+        <UserLayout>
+          <AnalyticsDashboard />
+        </UserLayout> :
+        <Navigate to="/login" />
+      } />
 
       {/* Fallback for unknown routes */}
       <Route

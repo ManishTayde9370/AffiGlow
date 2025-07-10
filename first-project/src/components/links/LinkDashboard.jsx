@@ -3,12 +3,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import { serverEndpoint } from "../../config";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { userPermissions } from "../../rbac/permissions";
+import { Navigate, useNavigate } from "react-router-dom";
 
 function LinkDashboard() {
+  const navigate= useNavigate();
   const [errors, setErrors] = useState({});
   const [linksData, setLinksData] = useState([]);
   const [formData, setFormData] = useState({
@@ -31,7 +34,7 @@ function LinkDashboard() {
     } catch (error) {
       setErrors({ message: "Unable to fetch links at the moment, please try again" });
     }
-    
+
   };
 
   useEffect(() => {
@@ -138,12 +141,13 @@ function LinkDashboard() {
       handleModalClose();
     } catch (error) {
       if (error.response?.data?.code === "INSUFFICIENT_FUNDS") {
-        setErrors({ message: `You do not have enough credits to perform this action.
+        setErrors({
+          message: `You do not have enough credits to perform this action.
           Add funds to your account using Manage Payments option.` });
       } else {
-      setErrors({ message: "Something went wrong, please try again" });
-    }
-  }finally {
+        setErrors({ message: "Something went wrong, please try again" });
+      }
+    } finally {
       handleModalClose();
     }
   };
@@ -174,13 +178,23 @@ function LinkDashboard() {
         <>
           {permission.canEditLink && (
             <IconButton>
-            <EditIcon onClick={() => handleModalShow(true, params.row)}/>
-          </IconButton>
+              <EditIcon onClick={() => handleModalShow(true, params.row)} />
+            </IconButton>
           )}
           {permission.canDeleteLink && (
-          <IconButton>
-            <DeleteIcon  onClick={() => handleDeleteModalShow(params.row._id)}/>
-          </IconButton>
+            <IconButton>
+              <DeleteIcon onClick={() => handleDeleteModalShow(params.row._id)} />
+            </IconButton>
+          )}
+
+          {permission.canViewLink && (
+            <IconButton>
+              <AssessmentIcon
+                onClick={() => {
+                    navigate(`/analytics/${params.row._id}`)
+                }}
+              />
+            </IconButton>
           )}
         </>
       ),
@@ -192,9 +206,9 @@ function LinkDashboard() {
       <div className="d-flex justify-content-between mb-3">
         <h2>Manage your Affiliate Links</h2>
         {permission.canCreateLink && (
-        <button className="btn btn-primary btn-sm" onClick={() => handleModalShow(false)}>
-          Add
-        </button>
+          <button className="btn btn-primary btn-sm" onClick={() => handleModalShow(false)}>
+            Add
+          </button>
         )}
       </div>
 
@@ -225,8 +239,8 @@ function LinkDashboard() {
                   {field === "campaignTitle"
                     ? "Campaign Title"
                     : field === "originalUrl"
-                    ? "Original URL"
-                    : "Category"}
+                      ? "Original URL"
+                      : "Category"}
                 </label>
                 <input
                   type="text"
