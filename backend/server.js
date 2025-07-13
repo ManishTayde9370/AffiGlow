@@ -5,23 +5,22 @@ const cors=require('cors');
 
 const authRoutes=require('./src/routes/authRoutes');
 const linksRoutes = require('./src/routes/linksRoutes');
-const userRoutes = require("./src/routes/userRoutes")
-const payementsRoutes = require('./src/routes/payementRoutes');
-
+const userRoutes = require("./src/routes/userRoutes");
+const paymentsRoutes = require("./src/routes/paymentRoutes");
 
 const cookieParser = require('cookie-parser');
 const { default: mongoose } = require('mongoose');
 
-
-app.use(cookieParser());
-
-app.use((request, response,next)=>{
+// app.use(express.json()); //Middleware
+app.use((request,response,next)=>{
     if(request.originalUrl.startsWith('/payments/webhook')){
         return next();
     }
+
     express.json()(request,response,next);
 });
 
+app.use(cookieParser());
 
 mongoose.connect(process.env.MONGO_URI)
 .then(()=>console.log('Database connected'))
@@ -38,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/auth',authRoutes);
 app.use('/links',linksRoutes);
 app.use('/users',userRoutes);
-app.use('/payments',payementsRoutes);
+app.use('/payments',paymentsRoutes);
 
 const PORT=5000;
 

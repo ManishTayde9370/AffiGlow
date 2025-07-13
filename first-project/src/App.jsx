@@ -16,8 +16,7 @@ import UserLayout from "./layout/UserLayout";
 import ManageUsers from "./pages/users/ManageUsers";
 import ProtectedRoute from "./rbac/ProtectedRoute";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
-// import ManagePayments from "./payments/ManagePayments";
-import Error from "./pages/Error"; // ✅ Error Page Import
+import Error from "./pages/Error";
 import ManagePayments from "./pages/payments/ManagePayments";
 import AnalyticsDashboard from "./components/links/AnalyticsDashboard";
 
@@ -26,6 +25,23 @@ function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
+  const attemptToRefreshToken = async () => {
+    try {
+      const response = await axios.post(
+        `${serverEndpoint}/auth/refresh-token`,
+        {},
+        { withCredentials: true }
+      );
+
+      dispatch({
+        type: "SET_USER",
+        payload: response.data.userDetails
+      });
+    } catch (error) {
+      console.log('Token refresh failed:', error);
+    }
+  };
+
   const isUserLoggedIn = async () => {
     try {
       const response = await axios.post(
@@ -33,12 +49,18 @@ function App() {
         {},
         { withCredentials: true }
       );
+
       dispatch({
         type: "SET_USER",
         payload: response.data.userDetails,
       });
     } catch (error) {
-      console.error("User not logged in:", error?.response?.data || error.message);
+      if (error.response?.status === 401) {
+        console.log('Token expired, attempting to refresh');
+        await attemptToRefreshToken();
+      } else {
+        console.error("User not logged in:", error?.response?.data || error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -176,12 +198,19 @@ function App() {
         }
       />
 
-      <Route path="/analytics/:linkId" element={userDetails ?
-        <UserLayout>
-          <AnalyticsDashboard />
-        </UserLayout> :
-        <Navigate to="/login" />
-      } />
+      {/* Analytics Dashboard */}
+      <Route
+        path="/analytics/:linkId"
+        element={
+          userDetails ? (
+            <UserLayout>
+              <AnalyticsDashboard />
+            </UserLayout>
+          ) : (
+            <Navigate to="/login" />
+          )
+        }
+      />
 
       {/* Fallback for unknown routes */}
       <Route
