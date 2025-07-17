@@ -11,11 +11,17 @@ const permissions= {
         'payment:create',
     ],
     developer:[
-        'link:read'
+        'link:read',
+        'link:update',
+        'link:delete',
+        'payment:create'
     ],
     viewer:[
         'link:read',
-        'user:read'
+        'link:update',
+        'link:delete',
+        'user:read',
+        'payment:create'
     ]
 }
 

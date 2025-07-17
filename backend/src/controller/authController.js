@@ -1,12 +1,11 @@
 const bcrypt=require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Users = require('../model/Users');
-const secret = "309b161a-5c19-4952-bef1-546829211287";
+const secret = process.env.JWT_SECRET;
 const refreshSecret = process.env.JWT_REFRESH_TOKEN_SECRET;
 const {OAuth2Client} = require('google-auth-library');
 const { validationResult } = require('express-validator');
-const Razorpay = require('razorpay');
-
+const { send } = require('../service/emailService');
 
 
 const authController = {
@@ -37,7 +36,7 @@ const authController = {
                 adminId: data.adminId,
                 credits:data.credits
             };
-            const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '1m' });
+            const token = jwt.sign(userDetails, process.env.JWT_SECRET, { expiresIn: '7d' });
             const refreshToken = jwt.sign(userDetails,refreshSecret,{expiresIn: '7d'});
 
             response.cookie('jwtToken', token, {
@@ -146,8 +145,8 @@ const authController = {
                 credits:data.credits
             };
 
-            const token=jwt.sign(user,process.env.JWT_SECRET,{expiresIn:'1m'});
-            const refreshToken = jwt.sign(user,refreshSecret,{expiresIn:'7h'});
+            const token=jwt.sign(user,process.env.JWT_SECRET,{expiresIn:'7d'});
+            const refreshToken = jwt.sign(user,refreshSecret,{expiresIn:'7d'});
 
             response.cookie('jwtToken',token,{
                 httpOnly:true,
@@ -188,7 +187,7 @@ const authController = {
                 subscription: data.subscription
             };
 
-            const newAccessToken = jwt.sign(user,secret,{expiresIn:'1m'});
+            const newAccessToken = jwt.sign(user,secret,{expiresIn:'7d'});
 
             response.cookie('jwtToken',newAccessToken,{
                 httpOnly: true,
@@ -204,6 +203,57 @@ const authController = {
                 message:"Internal server error"
             });
         }
+    },
+
+    sendResetPasswordToken: async (req, res) => {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+        const user = await Users.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        // Generate 6-digit code
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiry = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+        user.resetPasswordCode = code;
+        user.resetPasswordCodeExpiry = expiry;
+        await user.save();
+        // Send code via email
+        try {
+            await send(email, 'Your Password Reset Code', `Your password reset code is: ${code}`);
+        } catch (err) {
+            return res.status(500).json({ message: 'Failed to send email' });
+        }
+        return res.json({ message: 'Reset code sent to email' });
+    },
+
+    resetPassword: async (req, res) => {
+        const { email, code, newPassword } = req.body;
+        if (!email || !code || !newPassword) {
+            return res.status(400).json({ message: 'Email, code, and new password are required' });
+        }
+        const user = await Users.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        if (!user.resetPasswordCode || !user.resetPasswordCodeExpiry) {
+            return res.status(400).json({ message: 'No reset code found. Please request a new one.' });
+        }
+        if (user.resetPasswordCode !== code) {
+            return res.status(400).json({ message: 'Invalid reset code' });
+        }
+        if (user.resetPasswordCodeExpiry < new Date()) {
+            return res.status(400).json({ message: 'Reset code expired' });
+        }
+        // Hash new password
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = encryptedPassword;
+        user.resetPasswordCode = undefined;
+        user.resetPasswordCodeExpiry = undefined;
+        await user.save();
+        return res.json({ message: 'Password reset successful' });
     }
 };
 

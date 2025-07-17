@@ -2,11 +2,10 @@ import axios from "axios";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { serverEndpoint } from "../../config";
-// import { serverEndpoint } from "../../config/config";
 
-// Format ISO date strings to human-readable format
 function formatDate(isoDateString) {
   if (!isoDateString) return '';
+
   try {
     const date = new Date(isoDateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -29,20 +28,16 @@ function Subscription() {
 
   const handleCancel = async () => {
     try {
-      const response = await axios.post(
-        `${serverEndpoint}/payments/cancel-subscription`,
-        {
-          subscription_id: subscription?.id,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${serverEndpoint}/payments/cancel-subscription`, {
+        subscription_id: userDetails.subscription?.id,
+      }, {
+        withCredentials: true,
+      });
 
       console.log(response);
       setMessage('Subscription cancelled, it can take up to 5 minutes to reflect the status');
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setErrors({ message: 'Unable to cancel subscription' });
     }
   };
@@ -58,23 +53,30 @@ function Subscription() {
             <div className="card-body">
               <h3 className="card-title">Subscription Summary</h3>
               <hr />
-              <div className="pb-2">
-                <strong>Start Date: </strong> {formatDate(subscription?.start)}
-              </div>
-              <div className="pb-2">
-                <strong>End Date: </strong> {formatDate(subscription?.end)}
-              </div>
-              <div className="pb-2">
-                <strong>Last Payment Date: </strong> {formatDate(subscription?.lastBillDate)}
-              </div>
-              <div className="pb-2">
-                <strong>Next Payment Date: </strong> {formatDate(subscription?.nextBillDate)}
-              </div>
-              <div className="pb-2">
-                <strong>Total Payments Made: </strong> {subscription?.paymentsMade}
-              </div>
-              <div className="pb-2">
-                <strong>Payments Remaining: </strong> {subscription?.paymentsRemaining}
+              <div className="card-text">
+                <div className="pb-2">
+                  <strong>Start Date: </strong> {formatDate(subscription.start)}
+                </div>
+
+                <div className="pb-2">
+                  <strong>End Date: </strong> {formatDate(subscription.end)}
+                </div>
+
+                <div className="pb-2">
+                  <strong>Last Payment Date: </strong> {formatDate(subscription.lastBillDate)}
+                </div>
+
+                <div className="pb-2">
+                  <strong>Next Payment Date: </strong> {formatDate(subscription.nextBillDate)}
+                </div>
+
+                <div className="pb-2">
+                  <strong>Total Payments Made: </strong> {subscription.paymentsMade}
+                </div>
+
+                <div className="pb-2">
+                  <strong>Payments Remaining: </strong> {subscription.paymentsRemaining}
+                </div>
               </div>
               <hr />
               <div className="text-center">

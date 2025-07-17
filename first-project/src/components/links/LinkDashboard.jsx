@@ -8,10 +8,9 @@ import { serverEndpoint } from "../../config";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { userPermissions } from "../../rbac/permissions";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function LinkDashboard() {
-  const navigate= useNavigate();
   const [errors, setErrors] = useState({});
   const [linksData, setLinksData] = useState([]);
   const [formData, setFormData] = useState({
@@ -24,6 +23,7 @@ function LinkDashboard() {
   const [isEdit, setIsEdit] = useState(false);
   const permission = userPermissions();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const navigate = useNavigate();
 
   const fetchLinks = async () => {
     try {
@@ -32,9 +32,10 @@ function LinkDashboard() {
       });
       setLinksData(response.data.data);
     } catch (error) {
-      setErrors({ message: "Unable to fetch links at the moment, please try again" });
+      setErrors({
+        message: "Unable to fetch links at the moment, please try again",
+      });
     }
-
   };
 
   useEffect(() => {
@@ -138,12 +139,12 @@ function LinkDashboard() {
         });
       }
       fetchLinks();
-      handleModalClose();
     } catch (error) {
       if (error.response?.data?.code === "INSUFFICIENT_FUNDS") {
         setErrors({
           message: `You do not have enough credits to perform this action.
-          Add funds to your account using Manage Payments option.` });
+                        Add funds to your account using Manage Payment option`,
+        });
       } else {
         setErrors({ message: "Something went wrong, please try again" });
       }
@@ -177,23 +178,18 @@ function LinkDashboard() {
       renderCell: (params) => (
         <>
           {permission.canEditLink && (
-            <IconButton>
-              <EditIcon onClick={() => handleModalShow(true, params.row)} />
+            <IconButton onClick={() => handleModalShow(true, params.row)}>
+              <EditIcon />
             </IconButton>
           )}
           {permission.canDeleteLink && (
-            <IconButton>
-              <DeleteIcon onClick={() => handleDeleteModalShow(params.row._id)} />
+            <IconButton onClick={() => handleDeleteModalShow(params.row._id)}>
+              <DeleteIcon />
             </IconButton>
           )}
-
           {permission.canViewLink && (
-            <IconButton>
-              <AssessmentIcon
-                onClick={() => {
-                    navigate(`/analytics/${params.row._id}`)
-                }}
-              />
+            <IconButton onClick={() => navigate(`/analytics/${params.row._id}`)}>
+              <AssessmentIcon />
             </IconButton>
           )}
         </>
@@ -206,13 +202,18 @@ function LinkDashboard() {
       <div className="d-flex justify-content-between mb-3">
         <h2>Manage your Affiliate Links</h2>
         {permission.canCreateLink && (
-          <button className="btn btn-primary btn-sm" onClick={() => handleModalShow(false)}>
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => handleModalShow(false)}
+          >
             Add
           </button>
         )}
       </div>
 
-      {errors.message && <div className="alert alert-danger">{errors.message}</div>}
+      {errors.message && (
+        <div className="alert alert-danger">{errors.message}</div>
+      )}
 
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid
@@ -239,17 +240,21 @@ function LinkDashboard() {
                   {field === "campaignTitle"
                     ? "Campaign Title"
                     : field === "originalUrl"
-                      ? "Original URL"
-                      : "Category"}
+                    ? "Original URL"
+                    : "Category"}
                 </label>
                 <input
                   type="text"
                   name={field}
-                  className={`form-control ${errors[field] ? "is-invalid" : ""}`}
+                  className={`form-control ${
+                    errors[field] ? "is-invalid" : ""
+                  }`}
                   value={formData[field]}
                   onChange={handleChange}
                 />
-                {errors[field] && <div className="invalid-feedback">{errors[field]}</div>}
+                {errors[field] && (
+                  <div className="invalid-feedback">{errors[field]}</div>
+                )}
               </div>
             ))}
             <div className="d-grid">
@@ -268,7 +273,10 @@ function LinkDashboard() {
         </Modal.Header>
         <Modal.Body>Are you sure you want to delete this link?</Modal.Body>
         <Modal.Footer>
-          <button className="btn btn-secondary" onClick={handleDeleteModalClose}>
+          <button
+            className="btn btn-secondary"
+            onClick={handleDeleteModalClose}
+          >
             Cancel
           </button>
           <button className="btn btn-danger" onClick={handleDeleteSubmit}>

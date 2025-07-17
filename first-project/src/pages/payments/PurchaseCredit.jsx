@@ -2,11 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { CREDIT_PACKS, PLAN_IDS, pricingList } from "../../payments";
 import { useState } from "react";
 import axios from "axios";
-
 import './PurchaseCredit.css';
 import { Modal } from "react-bootstrap";
 import { serverEndpoint } from "../../config";
-import { SET_USER } from "../../redux/actions";
+import { SET_USER } from '../../redux/actions';
 
 function PurchaseCredit() {
   const dispatch = useDispatch();
@@ -28,7 +27,7 @@ function PurchaseCredit() {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: data.order.amount,
         currency: data.order.currency,
-        name: 'Affiliate++',
+        name: 'AffiGlow',
         description: `${credits} Credits Pack`,
         order_id: data.order.id,
         handler: async (response) => {
@@ -44,7 +43,10 @@ function PurchaseCredit() {
               { withCredentials: true }
             );
 
-            dispatch({ type: SET_USER, payload: data });
+            dispatch({
+              type: SET_USER,
+              payload: data
+            });
             setMessage(`${credits} credits added!`);
           } catch (error) {
             console.error(error);
@@ -56,7 +58,6 @@ function PurchaseCredit() {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-
     } catch (error) {
       console.error(error);
       setErrors({ message: 'Unable to purchase credits, please try again' });
@@ -77,7 +78,7 @@ function PurchaseCredit() {
         name: plan.planName,
         description: plan.description,
         subscription_id: data.subscription.id,
-        handler: async (response) => {
+        handler: async function (response) {
           try {
             const user = await axios.post(
               `${serverEndpoint}/payments/verify-subscription`,
@@ -85,18 +86,20 @@ function PurchaseCredit() {
               { withCredentials: true }
             );
 
-            dispatch({ type: SET_USER, payload: user.data });
+            dispatch({
+              type: SET_USER,
+              payload: user.data
+            });
             setMessage('Subscription activated');
           } catch (error) {
             setErrors({ message: 'Unable to activate subscription, please try again' });
           }
         },
-        theme: { color: '#3399cc' }
+        theme: { color: "#3399cc" }
       };
 
       const rzp = new window.Razorpay(options);
       rzp.open();
-
     } catch (error) {
       console.error(error);
       setErrors({ message: 'Failed to create subscription' });
@@ -109,16 +112,19 @@ function PurchaseCredit() {
         {errors.message && <div className="alert alert-danger">{errors.message}</div>}
         {message && <div className="alert alert-success">{message}</div>}
 
-        <div className="d-flex justify-content-between align-items-start w-100 mb-4">
-          <div>
+        <div className="d-flex justify-content-between align-items-start w-100">
+          <div className="text-left">
             <h3 className="ezy__pricing10-heading">Choose Plan</h3>
-            <p className="ezy__pricing10-sub-heading mt-2">
+            <p className="ezy__pricing10-sub-heading mt-3">
               Flexible options: one-time credits or recurring subscriptions.
             </p>
           </div>
-          <div className="text-end">
-            <h5>Current Balance</h5>
-            <p className="ezy__pricing10-sub-heading">{userDetails.credits} Credits</p>
+
+          <div className="text-right">
+            <h3>Current Balance</h3>
+            <p className="ezy__pricing10-sub-heading mt-3">
+              {userDetails.credits} Credits
+            </p>
           </div>
         </div>
 
@@ -189,7 +195,7 @@ function PurchaseCredit() {
           </div>
         </div>
 
-        {/* React-Bootstrap Modal for Buying Credits */}
+        {/* Modal for buying credits */}
         <Modal show={showModal} onHide={() => setShowModal(false)} centered>
           <Modal.Header closeButton>
             <Modal.Title>Buy Credits</Modal.Title>

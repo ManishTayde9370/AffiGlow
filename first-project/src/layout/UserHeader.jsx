@@ -37,15 +37,15 @@ function UserHeader() {
                         {userDetails?(userDetails.name):(<>Account</>)}
                         </Link>
                         <ul className='dropdown-menu dropdown-menu-end'>
+                            <li>
+                                <Link className='dropdown-item' to="/manage-payment">
+                                    Payments
+                                </Link>
+                            </li>
                             <Can permission='canViewUser'>
                                 <li>
                                     <Link className='dropdown-item' to='/users'>
                                         Manage Users
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link className='dropdown-item' to='/manage-payments'>
-                                        Payments
                                     </Link>
                                 </li>
                             </Can>

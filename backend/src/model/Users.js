@@ -61,7 +61,15 @@ const UsersSchema=new mongoose.Schema({
     },
     credits:{
         type:Number,
-        deafult:0
+        default:0
+    },
+    resetPasswordCode: {
+        type: String,
+        required: false
+    },
+    resetPasswordCodeExpiry: {
+        type: Date,
+        required: false
     },
     subscription:{
         type: subscriptionSchema,
