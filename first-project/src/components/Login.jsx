@@ -71,7 +71,7 @@ function Login() {
   const handleGoogleSignin = async (authResponse) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/google-auth",
+        `${serverEndpoint}/auth/google-auth`,
         {
           idToken: authResponse.credential,
         },

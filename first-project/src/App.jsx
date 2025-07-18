@@ -58,7 +58,7 @@ function App() {
   const isUserLoggedIn = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/is-user-logged-in",
+        `${serverEndpoint}/auth/is-user-logged-in`,
         {},
         {
           withCredentials: true,

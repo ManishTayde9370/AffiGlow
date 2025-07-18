@@ -190,7 +190,7 @@ const authController = {
             const newAccessToken = jwt.sign(user,secret,{expiresIn:'7d'});
 
             response.cookie('jwtToken',newAccessToken,{
-                 httpOnly: true,
+                httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
                 path: '/',
                 sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
