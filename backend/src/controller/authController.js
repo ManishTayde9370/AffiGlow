@@ -41,16 +41,16 @@ const authController = {
 
             response.cookie('jwtToken', token, {
                 httpOnly: true,
-                secure: true,
-                domain: 'localhost',
-                path: '/'
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
             });
 
             response.cookie('refreshToken',refreshToken,{
-                httpOnly: true,
-                secure: true,
-                domain: 'localhost',
-                path: '/'
+                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
             });
 
             response.json({ message: 'User authenticated', userDetails: userDetails });
@@ -149,17 +149,17 @@ const authController = {
             const refreshToken = jwt.sign(user,refreshSecret,{expiresIn:'7d'});
 
             response.cookie('jwtToken',token,{
-                httpOnly:true,
-                secure:true,
-                domain:'localhost',
-                path:'/'
+               httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
             });
 
             response.cookie('refreshToken',refreshToken,{
-                httpOnly: true,
-                secure: true,
-                domain: 'localhost',
-                path: '/'
+                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
             });     
 
             response.json({message:'User authenticated',userDetails:user});
@@ -190,10 +190,10 @@ const authController = {
             const newAccessToken = jwt.sign(user,secret,{expiresIn:'7d'});
 
             response.cookie('jwtToken',newAccessToken,{
-                httpOnly: true,
-                secure: true,
-                domain: 'localhost',
-                path: '/'
+                 httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                path: '/',
+                sameSite: process.env.NODE_ENV === 'production'?'None': 'Lax'
             });
 
             response.json({message: 'Token refreshed', userDetails:user});
