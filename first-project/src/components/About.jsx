@@ -1,89 +1,321 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FaLink, FaChartLine, FaCreditCard, FaUsers, FaMagic } from 'react-icons/fa';
+import { FaLink, FaChartLine, FaCreditCard, FaUsers, FaMagic, FaStar, FaRocket, FaShieldAlt } from 'react-icons/fa';
 
 function About() {
   const userDetails = useSelector((state) => state.userDetails);
+  
   return (
-    <div className="container py-5" style={{fontFamily: 'Montserrat, Inter, sans-serif'}}>
+    <div className="container py-5" style={{fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif'}}>
+      {/* Hero Section */}
       <div className="row align-items-center mb-5">
-        <div className="col-md-6 mb-4 mb-md-0">
-          <h1 className="fw-bold mb-3" style={{fontSize: 40, color: '#6366f1', letterSpacing: 1}}>What is <span style={{color: '#3b3b5c'}}>AffiGlow</span>?</h1>
-          <p className="fs-5 mb-4" style={{color: '#444'}}>AffiGlow is a next-generation platform for affiliate marketers and businesses to manage links, track analytics, and handle payments with ease. Whether you’re a solo marketer or a team, AffiGlow gives you the power to grow and optimize your affiliate campaigns in style.</p>
-          <div className="row g-3 mb-4">
-            <div className="col-12 col-sm-6">
-              <div className="card h-100 border-0 shadow-sm p-3" style={{borderRadius: 16, background: 'linear-gradient(90deg, #e0e7ff 0%, #f8fafc 100%)'}}>
-                <FaLink size={32} className="mb-2 text-primary" />
-                <h5 className="fw-bold mb-1">Centralized Links</h5>
-                <p className="mb-0" style={{fontSize: 15}}>Organize, create, and edit all your affiliate links in one place.</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6">
-              <div className="card h-100 border-0 shadow-sm p-3" style={{borderRadius: 16, background: 'linear-gradient(90deg, #f8fafc 0%, #e0e7ff 100%)'}}>
-                <FaChartLine size={32} className="mb-2 text-success" />
-                <h5 className="fw-bold mb-1">Real-Time Analytics</h5>
-                <p className="mb-0" style={{fontSize: 15}}>See which links perform best and optimize your campaigns.</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6">
-              <div className="card h-100 border-0 shadow-sm p-3" style={{borderRadius: 16, background: 'linear-gradient(90deg, #e0e7ff 0%, #f8fafc 100%)'}}>
-                <FaCreditCard size={32} className="mb-2 text-warning" />
-                <h5 className="fw-bold mb-1">Secure Payments</h5>
-                <p className="mb-0" style={{fontSize: 15}}>Buy credits, manage subscriptions, and handle payments securely.</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6">
-              <div className="card h-100 border-0 shadow-sm p-3" style={{borderRadius: 16, background: 'linear-gradient(90deg, #f8fafc 0%, #e0e7ff 100%)'}}>
-                <FaUsers size={32} className="mb-2 text-info" />
-                <h5 className="fw-bold mb-1">Team Collaboration</h5>
-                <p className="mb-0" style={{fontSize: 15}}>Assign roles, collaborate, and control access for your team.</p>
-              </div>
-            </div>
-            <div className="col-12 col-sm-6">
-              <div className="card h-100 border-0 shadow-sm p-3" style={{borderRadius: 16, background: 'linear-gradient(90deg, #e0e7ff 0%, #f8fafc 100%)'}}>
-                <FaMagic size={32} className="mb-2 text-secondary" />
-                <h5 className="fw-bold mb-1">Modern & Responsive</h5>
-                <p className="mb-0" style={{fontSize: 15}}>Enjoy a seamless, beautiful experience on any device.</p>
-              </div>
-            </div>
+        <div className="col-lg-6 mb-5 mb-lg-0">
+          <div className="mb-4">
+            <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-3" style={{fontSize: '0.9rem'}}>
+              <FaStar className="me-2" />
+              About Our Platform
+            </span>
           </div>
+          <h1 className="display-5 fw-bold mb-4" style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            lineHeight: 1.2
+          }}>
+            We're here to make your <br />
+            <span style={{color: '#667eea'}}>affiliate dreams</span> come true
+          </h1>
+          <p className="lead text-muted mb-4" style={{fontSize: '1.25rem', lineHeight: 1.6}}>
+            AffiGlow is more than just a platform – it's your partner in affiliate marketing success. 
+            We've built the tools you need to grow, track, and optimize your campaigns with confidence.
+          </p>
           {userDetails && (
-            <div className="mt-4">
-              <Link to="/dashboard" className="btn btn-gradient btn-lg px-4 py-2" style={{background: 'linear-gradient(90deg, #6366f1 0%, #818cf8 100%)', color: '#fff', borderRadius: 24, fontWeight: 600, fontSize: 18, boxShadow: '0 2px 8px 0 rgba(60,60,120,0.10)'}}>Explore Dashboard</Link>
-            </div>
+            <Link to="/dashboard" className="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-sm" style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              fontWeight: 600,
+              fontSize: '1.1rem'
+            }}>
+              <FaRocket className="me-2" />
+              Explore Dashboard
+            </Link>
           )}
         </div>
-        <div className="col-md-6 text-center">
-          <img src="/vite.svg" alt="AffiGlow Illustration" className="img-fluid mb-3" style={{maxHeight: 320, borderRadius: 24, boxShadow: '0 4px 24px 0 rgba(99,102,241,0.10)'}} />
-          <div className="mt-3">
-            <span className="badge rounded-pill" style={{background: 'linear-gradient(90deg, #6366f1 0%, #818cf8 100%)', color: '#fff', fontSize: 16, padding: '10px 24px'}}>Grow your affiliate business with AffiGlow!</span>
+        <div className="col-lg-6 text-center">
+          <div className="position-relative">
+            <div className="bg-gradient-primary rounded-4 p-5 d-inline-block shadow-lg" style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              width: '100%',
+              maxWidth: '400px',
+              height: '300px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <FaRocket className="text-white" style={{fontSize: '5rem'}} />
+            </div>
+            <div className="position-absolute top-0 start-100 translate-middle">
+              <div className="bg-success rounded-circle p-3 shadow">
+                <FaStar className="text-white" style={{fontSize: '1.5rem'}} />
+              </div>
+            </div>
+            <div className="position-absolute bottom-0 end-0">
+              <div className="bg-warning rounded-circle p-3 shadow">
+                <FaShieldAlt className="text-white" style={{fontSize: '1.5rem'}} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="row mt-5">
-        <div className="col-md-12">
-          <h3 className="fw-semibold mb-3" style={{color: '#6366f1'}}>What our users say</h3>
+
+      {/* Features Grid */}
+      <div className="row mb-5">
+        <div className="col-12">
+          <h2 className="fw-bold mb-5 text-center" style={{color: '#2d3748'}}>
+            Everything you need to succeed
+          </h2>
+          <div className="row g-4">
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-primary bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaLink className="text-primary" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Centralized Links</h5>
+                  <p className="text-muted">Organize, create, and edit all your affiliate links in one beautiful, intuitive place</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-success bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaChartLine className="text-success" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Real-Time Analytics</h5>
+                  <p className="text-muted">See which links perform best and optimize your campaigns with detailed insights</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-warning bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaCreditCard className="text-warning" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Secure Payments</h5>
+                  <p className="text-muted">Buy credits, manage subscriptions, and handle all payments securely</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-info bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaUsers className="text-info" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Team Collaboration</h5>
+                  <p className="text-muted">Assign roles, collaborate, and control access for your growing team</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-secondary bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaMagic className="text-secondary" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Modern & Responsive</h5>
+                  <p className="text-muted">Enjoy a seamless, beautiful experience on any device, anywhere</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-lg-4">
+              <div className="card h-100 border-0 shadow-sm rounded-4" style={{
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                cursor: 'pointer'
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+              }}>
+                <div className="card-body text-center p-4">
+                  <div className="bg-danger bg-opacity-10 rounded-circle p-4 d-inline-block mb-3">
+                    <FaShieldAlt className="text-danger" style={{fontSize: '2.5rem'}} />
+                  </div>
+                  <h5 className="fw-bold mb-3" style={{color: '#2d3748'}}>Enterprise Security</h5>
+                  <p className="text-muted">Bank-level security to keep your data and transactions safe</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Testimonials */}
+      <div className="row">
+        <div className="col-12">
+          <h2 className="fw-bold mb-5 text-center" style={{color: '#2d3748'}}>
+            What our amazing users say
+          </h2>
           <div className="row g-4">
             <div className="col-md-4">
-              <div className="card p-3 shadow-sm h-100 border-0" style={{borderRadius: 18}}>
-                <div className="mb-2" style={{fontSize: 22}}>⭐⭐⭐⭐⭐</div>
-                <div>"AffiGlow made it so easy to manage my affiliate links and track performance. Highly recommended!"</div>
-                <div className="text-muted mt-2">- Priya, Affiliate Marketer</div>
+              <div className="card border-0 shadow-sm rounded-4 h-100" style={{
+                background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                border: '2px solid #e2e8f0'
+              }}>
+                <div className="card-body p-4">
+                  <div className="mb-3">
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                  </div>
+                  <p className="mb-3" style={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    "AffiGlow made it so easy to manage my affiliate links and track performance. 
+                    The analytics are incredible and the UI is just beautiful!"
+                  </p>
+                  <div className="d-flex align-items-center">
+                    <div className="bg-primary rounded-circle me-3" style={{
+                      width: '40px',
+                      height: '40px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 600
+                    }}>
+                      P
+                    </div>
+                    <div>
+                      <div className="fw-bold" style={{color: '#2d3748'}}>Priya Sharma</div>
+                      <div className="text-muted small">Affiliate Marketer</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card p-3 shadow-sm h-100 border-0" style={{borderRadius: 18}}>
-                <div className="mb-2" style={{fontSize: 22}}>⭐⭐⭐⭐⭐</div>
-                <div>"Our team can now collaborate and manage campaigns securely. The analytics are a game changer!"</div>
-                <div className="text-muted mt-2">- Rahul, Agency Owner</div>
+              <div className="card border-0 shadow-sm rounded-4 h-100" style={{
+                background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                border: '2px solid #e2e8f0'
+              }}>
+                <div className="card-body p-4">
+                  <div className="mb-3">
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                  </div>
+                  <p className="mb-3" style={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    "Our team can now collaborate and manage campaigns securely. 
+                    The role-based permissions are exactly what we needed!"
+                  </p>
+                  <div className="d-flex align-items-center">
+                    <div className="bg-success rounded-circle me-3" style={{
+                      width: '40px',
+                      height: '40px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 600
+                    }}>
+                      R
+                    </div>
+                    <div>
+                      <div className="fw-bold" style={{color: '#2d3748'}}>Rahul Patel</div>
+                      <div className="text-muted small">Agency Owner</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="col-md-4">
-              <div className="card p-3 shadow-sm h-100 border-0" style={{borderRadius: 18}}>
-                <div className="mb-2" style={{fontSize: 22}}>⭐⭐⭐⭐⭐</div>
-                <div>"The payment and credit system is seamless. I never worry about running out of credits!"</div>
-                <div className="text-muted mt-2">- Anjali, Business Owner</div>
+              <div className="card border-0 shadow-sm rounded-4 h-100" style={{
+                background: 'linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%)',
+                border: '2px solid #e2e8f0'
+              }}>
+                <div className="card-body p-4">
+                  <div className="mb-3">
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                    <FaStar className="text-warning me-1" />
+                  </div>
+                  <p className="mb-3" style={{fontSize: '1.1rem', lineHeight: 1.6}}>
+                    "The payment and credit system is seamless. I never worry about running out of credits, 
+                    and the dashboard is so intuitive!"
+                  </p>
+                  <div className="d-flex align-items-center">
+                    <div className="bg-warning rounded-circle me-3" style={{
+                      width: '40px',
+                      height: '40px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: 600
+                    }}>
+                      A
+                    </div>
+                    <div>
+                      <div className="fw-bold" style={{color: '#2d3748'}}>Anjali Singh</div>
+                      <div className="text-muted small">Business Owner</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
