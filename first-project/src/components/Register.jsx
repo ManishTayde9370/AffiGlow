@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { serverEndpoint } from "../config";
+
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -64,6 +66,7 @@ function Register() {
 
       setTimeout(() => navigate('/login'), 1500);
     } catch (error) {
+      console.log(error);
       const msg = error.response?.data?.message || 'Something went wrong';
       setErrors({ message: msg });
     }

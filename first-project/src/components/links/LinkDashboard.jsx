@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -19,30 +19,69 @@ function LinkDashboard() {
     originalUrl: "",
     category: "",
   });
-  const [showModal, setShowModal] = useState(false);
+  const [showModel, setShowModel] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const permission = userPermissions();
+
+  const [loading, setLoading]=useState(false);
+  const [searchTerm,setSearchTerm]=useState('');
+  const [currentPage,setCurrentPage]=useState(0);
+  const[pageSize, setPageSize]=useState(20);
+  const [totalCount,setTotalCount]=useState(0);
+   const [sortModal, setSortModal]=useState([
+    {field:'createdAt', sort: "desc"}]);
+
+  
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const navigate = useNavigate();
+  const [searchInput, setSearchInput] = useState("");
+  const debounceTimeout = useRef();
 
   const fetchLinks = async () => {
     try {
+      setLoading(true);
+
+      const sortField=sortModal[0]?.field || "createdAt";
+      const sortOrder=sortModal[0]?.sort || "desc";
+      const params={
+        currentPage: currentPage,
+        pageSize: pageSize, 
+        searchTerm: searchTerm,
+        sortField: sortField,
+        sortOrder:sortOrder
+      };
       const response = await axios.get(`${serverEndpoint}/links`, {
+        params:params,
         withCredentials: true,
       });
-      setLinksData(response.data.data);
+      setLinksData(response.data.data.links);
+      setTotalCount(response.data.data.total);
     } catch (error) {
       setErrors({
         message: "Unable to fetch links at the moment, please try again",
       });
+    }finally{
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchLinks();
-  }, []);
+  }, [currentPage,pageSize,sortModal,searchTerm]);
 
-  const handleModalShow = (editMode = false, data = {}) => {
+  // Debounce search input
+  useEffect(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => {
+      setSearchTerm(searchInput);
+      setCurrentPage(0);
+    }, 500);
+    return () => clearTimeout(debounceTimeout.current);
+  }, [searchInput]);
+
+  const handlemodlShow = (editMode = false, data = {}) => {
     if (editMode) {
       setFormData({
         id: data._id,
@@ -59,21 +98,21 @@ function LinkDashboard() {
       });
     }
     setIsEdit(editMode);
-    setShowModal(true);
+    setShowModel(true);
   };
 
-  const handleModalClose = () => {
-    setShowModal(false);
+  const handlemodelClose = () => {
+    setShowModel(false);
     setErrors({});
   };
 
-  const handleDeleteModalShow = (id) => {
+  const handleDeletemodelShow = (id) => {
     setFormData({ ...formData, id });
-    setShowDeleteModal(true);
+    setShowDeletemodel(true);
   };
 
-  const handleDeleteModalClose = () => {
-    setShowDeleteModal(false);
+  const handleDeletemodelClose = () => {
+    setShowDeletemodel(false);
   };
 
   const handleDeleteSubmit = async () => {
@@ -85,7 +124,7 @@ function LinkDashboard() {
     } catch (error) {
       setErrors({ message: "Something went wrong, please try again" });
     } finally {
-      handleDeleteModalClose();
+      handleDeletemodelClose();
     }
   };
 
@@ -149,7 +188,7 @@ function LinkDashboard() {
         setErrors({ message: "Something went wrong, please try again" });
       }
     } finally {
-      handleModalClose();
+      handlemodelClose();
     }
   };
 
@@ -175,15 +214,16 @@ function LinkDashboard() {
       field: "action",
       headerName: "Action",
       flex: 1,
+      sortable:false,
       renderCell: (params) => (
         <>
           {permission.canEditLink && (
-            <IconButton onClick={() => handleModalShow(true, params.row)}>
+            <IconButton onClick={() => handlemodlShow(true, params.row)}>
               <EditIcon />
             </IconButton>
           )}
           {permission.canDeleteLink && (
-            <IconButton onClick={() => handleDeleteModalShow(params.row._id)}>
+            <IconButton onClick={() => handleDeletemodelShow(params.row._id)}>
               <DeleteIcon />
             </IconButton>
           )}
@@ -195,6 +235,24 @@ function LinkDashboard() {
         </>
       ),
     },
+    {
+      field:'share',
+      headerName: 'share Affiliate Link',
+      sortable: false,
+      flex:1.5,
+      renderCell:(params)=>{
+        const  shareURL= `${serverEndpoint}/links/r/${params.row._id}`;
+        return(
+          <button className="btn btn-outline-primary btn-sm"
+          onClick={(e)=>{
+            navigator.clipboard.writeText(shareURL);
+          }}
+          >
+            Copy
+          </button>
+        );
+      }
+    }
   ];
 
   return (
@@ -204,37 +262,67 @@ function LinkDashboard() {
         {permission.canCreateLink && (
           <button
             className="btn btn-primary btn-sm"
-            onClick={() => handleModalShow(false)}
+            onClick={() => handlemodlShow(false)}
           >
             Add
           </button>
         )}
       </div>
+      
 
       {errors.message && (
         <div className="alert alert-danger">{errors.message}</div>
       )}
+      <div className="mb-2">
+        <input type="text"
+          className="form-control"
+          placeholder="Enter Campaign title, Orginial URL, or Category"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
 
       <div style={{ height: 500, width: "100%" }}>
         <DataGrid
           getRowId={(row) => row._id}
           rows={linksData}
           columns={columns}
-          paginationModel={{ pageSize: 20, page: 0 }}
-          rowsPerPageOptions={[20, 50, 100]}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: pageSize, page: currentPage },
+            },
+          }}
+          paginationMode="server"
+          pageSizeOptions={[10, 20, 50, 100]}
+          onPaginationModelChange={({ page, pageSize }) => {
+            setCurrentPage(page);
+            setPageSize(pageSize);
+          }}
+          rowCount={totalCount}
+          sortingMode="server"
+          sortModel={sortModal}
+          onSortModelChange={(model) => {
+            setSortModal(model);
+            setCurrentPage(0);
+          }}
           disableRowSelectionOnClick
+          showToolbar
           sx={{ fontFamily: "inherit" }}
         />
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal show={showModal} onHide={handleModalClose}>
+      <Modal show={showModel} onHide={handlemodelClose}>
         <Modal.Header closeButton>
           <Modal.Title>{isEdit ? "Edit Link" : "Add Link"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit}>
-            {["campaignTitle", "originalUrl", "category"].map((field) => (
+            {[
+              "campaignTitle",
+              "originalUrl",
+              "category"
+            ].map((field) => (
               <div className="mb-3" key={field}>
                 <label htmlFor={field} className="form-label">
                   {field === "campaignTitle"
@@ -246,9 +334,7 @@ function LinkDashboard() {
                 <input
                   type="text"
                   name={field}
-                  className={`form-control ${
-                    errors[field] ? "is-invalid" : ""
-                  }`}
+                  className={`form-control ${errors[field] ? "is-invalid" : ""}`}
                   value={formData[field]}
                   onChange={handleChange}
                 />
@@ -267,7 +353,7 @@ function LinkDashboard() {
       </Modal>
 
       {/* Delete Confirmation Modal */}
-      <Modal show={showDeleteModal} onHide={handleDeleteModalClose}>
+      <Modal show={showDeleteModal} onHide={handleDeletemodelClose}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
@@ -275,7 +361,7 @@ function LinkDashboard() {
         <Modal.Footer>
           <button
             className="btn btn-secondary"
-            onClick={handleDeleteModalClose}
+            onClick={handleDeletemodelClose}
           >
             Cancel
           </button>

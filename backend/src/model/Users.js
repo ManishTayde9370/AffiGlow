@@ -5,8 +5,7 @@ const subscriptionSchema = new mongoose.Schema({
         type:String,  //Razorpay subscription ID
     },
     status:{
-        type:String,
-        default:'pending'
+        type:String
     },
     start:{
         type:Date

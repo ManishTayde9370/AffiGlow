@@ -92,15 +92,13 @@ const authController = {
             }
             const encryptedPassword=await bcrypt.hash(password,10);
 
-            const user = new Users({
+            const user = await Users.create({
                 email:username,
                 password:encryptedPassword,
                 name:name,
                 role:'admin',
-                credits:user.credits
+                credits: 0
             });
-
-            await user.save();
             response.status(200).json({message:'User registered'});
         }catch(error){
             console.log(error);

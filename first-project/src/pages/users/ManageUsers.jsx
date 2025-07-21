@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-import {Modal} from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { serverEndpoint } from '../../config';
 
 const USER_ROLES = ['viewer','developer'];
@@ -18,12 +18,12 @@ function ManageUsers(){
         role:''
     });
 
-    const [showModal,setShowModal] = useState(false);
+    const [showmodel,setShowmodel] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [formLoading, setFormLoading]=useState(false);
 
-    const handleModalShow=(isEdit, data = {})=>{
+    const handlemodelShow=(isEdit, data = {})=>{
         if(isEdit){
             setFormData({
                 id:data._id,
@@ -39,24 +39,24 @@ function ManageUsers(){
             });
         }
         setIsEdit(isEdit);
-        setShowModal(true);
+        setShowmodel(true);
     };
 
-    const handleModalClose=()=>{
-        setShowModal(false);
+    const handlemodelClose=()=>{
+        setShowmodel(false);
     };
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeletemodel, setShowDeletemodel] = useState(false);
 
-    const handleDeleteModalShow = (userId) =>{
+    const handleDeletemodelShow = (userId) =>{
         setFormData({
             id:userId
         });
-        setShowDeleteModal(true);
+        setShowDeletemodel(true);
     };
 
-    const handleDeleteModalClose=()=>{
-        setShowDeleteModal(false);
+    const handleDeletemodelClose=()=>{
+        setShowDeletemodel(false);
     };
 
     const handleDeleteSubmit=async()=>{
@@ -74,7 +74,7 @@ function ManageUsers(){
         }catch(error){
             setErrors({message:'Something went wrong, please try again'});
         }finally{
-            handleDeleteModalClose();
+            handleDeletemodelClose();
             setFormLoading(false);
         }
     };
@@ -140,7 +140,7 @@ function ManageUsers(){
             }catch(error){
                 setErrors({message:'Something went wrong, please try again'});
             }finally{
-                handleModalClose();
+                handlemodelClose();
                 setFormLoading(false);
             }
         }
@@ -170,10 +170,10 @@ function ManageUsers(){
         {field:'action', headerName:'Action', flex:1, renderCell:(params)=>(
             <>
                 <IconButton>
-                    <EditIcon onClick={()=>handleModalShow(true, params.row)}/>
+                    <EditIcon onClick={()=>handlemodelShow(true, params.row)}/>
                 </IconButton>
                 <IconButton>
-                    <DeleteIcon onClick={()=>handleDeleteModalShow(params.row._id)}/>
+                    <DeleteIcon onClick={()=>handleDeletemodelShow(params.row._id)}/>
                 </IconButton>
             </>
         )}
@@ -183,7 +183,7 @@ function ManageUsers(){
         <div className='container py-4'>
             <div className='d-flex justify-content-between mb-3'>
                 <h2>Manage Users</h2>
-                <button className='btn btn-primary btn-sm' onClick={()=>handleModalShow(false)}>
+                <button className='btn btn-primary btn-sm' onClick={()=>handlemodelShow(false)}>
                     Add
                 </button>
             </div>
@@ -213,7 +213,7 @@ function ManageUsers(){
 
             </div>
 
-            <Modal show={showModal} onHide={handleModalClose}>
+            <Modal show={showmodel} onHide={handlemodelClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>{isEdit?(<>Edit User</>):(<>Add User</>)}</Modal.Title>
                 </Modal.Header>
@@ -283,13 +283,13 @@ function ManageUsers(){
                     </form>
                 </Modal.Body>
             </Modal>
-            <Modal show={showDeleteModal} onHide={()=>setShowDeleteModal()}>
+            <Modal show={showDeletemodel} onHide={()=>setShowDeletemodel()}>
                 <Modal.Header closeButton>
                     <Modal.Title>Confirm Delete</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Modal.Footer>
-                        <button className='btn btn-secondary' onClick={()=>setShowDeleteModal()}>
+                        <button className='btn btn-secondary' onClick={()=>setShowDeletemodel()}>
                             Cancel
                         </button>
                         {formLoading ? (

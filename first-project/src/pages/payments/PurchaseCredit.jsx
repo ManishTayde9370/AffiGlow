@@ -12,10 +12,10 @@ function PurchaseCredit() {
   const userDetails = useSelector((state) => state.userDetails);
   const [errors, setErrors] = useState({});
   const [message, setMessage] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showmodel, setShowmodel] = useState(false);
 
   const handleBuyCredits = async (credits) => {
-    setShowModal(false);
+    setShowmodel(false);
     try {
       const { data } = await axios.post(
         `${serverEndpoint}/payments/create-order`,
@@ -145,7 +145,7 @@ function PurchaseCredit() {
                     </li>
                   ))}
                 </ul>
-                <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+                <button className="btn btn-primary" onClick={() => setShowmodel(true)}>
                   Buy Credits
                 </button>
               </div>
@@ -196,7 +196,7 @@ function PurchaseCredit() {
         </div>
 
         {/* Modal for buying credits */}
-        <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal show={showmodel} onHide={() => setShowmodel(false)} centered>
           <Modal.Header closeButton>
             <Modal.Title>Buy Credits</Modal.Title>
           </Modal.Header>

@@ -16,6 +16,7 @@ function Error() {
     <div className='container text-center'>
         <h1>Error</h1>
         <p className='text-danger'>{errorMessage}</p>
+        <button className='btn btn-secondary' onClick={() => window.history.back()}>Go Back</button>
         <Link to="/">Go Home</Link>
     </div>
   )

@@ -27,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI)
 .catch(error=>console.log(error));
 
 const corsOptions={
-    origin: process.env.CLIENT_ENDPOINT,
+    origin: process.env.CLIENT_ENDPOINT || 'http://localhost:5173',
     credentials:true
 };
 app.use(cors(corsOptions));
