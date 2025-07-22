@@ -6,47 +6,63 @@
   min-height: 120px;
 }
 
-.custom-spinner-logo-wrapper {
-  position: relative;
-  width: 64px;
-  height: 64px;
+.custom-spinner-main-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.10);
+  display: block;
+}
+
+/* Uiverse.io Loader Styles by Nawsome */
+.loader {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: row;
 }
 
-.custom-spinner {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 6px solid transparent;
-  border-top: 6px solid #667eea;
-  border-right: 6px solid #764ba2;
-  border-bottom: 6px solid #667eea;
-  border-left: 6px solid #764ba2;
-  background: none;
-  animation: custom-spin 0.6s linear infinite;
-  box-shadow: 0 0 24px 4px rgba(102, 126, 234, 0.25), 0 0 40px 8px rgba(118, 75, 162, 0.15);
+.slider {
+  overflow: hidden;
+  background-color: white;
+  margin: 0 15px;
+  height: 80px;
+  width: 20px;
+  border-radius: 30px;
+  box-shadow: 15px 15px 20px rgba(0, 0, 0, 0.1), -15px -15px 30px #fff,
+    inset -5px -5px 10px rgba(0, 0, 255, 0.1),
+    inset 5px 5px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.slider::before {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1;
+  height: 20px;
+  width: 20px;
+  border-radius: 100%;
+  box-shadow: inset 0px 0px 0px rgba(0, 0, 0, 0.3), 0px 420px 0 400px #2697f3,
+    inset 0px 0px 0px rgba(0, 0, 0, 0.1);
+  animation: animate_2 2.5s ease-in-out infinite;
+  animation-delay: calc(-0.5s * var(--i));
 }
 
-.custom-spinner-logo {
-  width: 32px;
-  height: 32px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.15));
-}
-
-@keyframes custom-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+@keyframes animate_2 {
+  0% {
+    transform: translateY(250px);
+    filter: hue-rotate(0deg);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(250px);
+    filter: hue-rotate(180deg);
+  }
 }
 
 .custom-spinner-text {

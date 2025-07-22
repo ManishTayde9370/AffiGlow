@@ -33,18 +33,18 @@ function Header() {
           textDecoration: 'none',
           letterSpacing: '-0.025em'
         }}>
-          <div className="me-3" style={{
-            width: '40px',
-            height: '40px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            borderRadius: '12px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-          }}>
-            <span style={{color: 'white', fontWeight: 700, fontSize: '1.2rem'}}>A</span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            style={{
+              width: '40px',
+              height: '40px',
+              borderRadius: '12px',
+              objectFit: 'cover',
+              marginRight: '0.75rem',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}
+          />
           AffiGlow
         </Link>
 

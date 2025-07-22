@@ -8,7 +8,22 @@ function UserHeader() {
   return (
     <nav className='navbar navbar-expand-lg bg-dark border-bottom border-body' data-bs-theme="dark">
         <div className='container'>
-            <Link className='navbar-brand' to="/">
+            <Link className='navbar-brand d-flex align-items-center' to="/">
+                <img
+                    src="/logo.png"
+                    alt="Logo"
+                    style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '12px',
+                        objectFit: 'cover',
+                        marginRight: '0.75rem',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                        // background: 'white',
+                        // border: '1px solid #e2e8f0',
+                        // padding: '2px'
+                    }}
+                />
                 Dashboard
             </Link>
             <button 
