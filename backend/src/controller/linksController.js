@@ -3,16 +3,28 @@ const Users = require("../model/Users");
 const axios = require('axios');
 const { getDeviceInfo } = require("../util/linksUtility");
 const Clicks = require("../model/Click");
+const { generateUploadSignature } = require("../service/cloudinaryService");
 
 const linksController = {
     create: async (request, response) => {
-        const { campaign_title, original_url, category } = request.body;
+        const { campaign_title, original_url, category, thumbnail } = request.body;
         try {
             const user = await Users.findById({ _id: request.user.id });
-            if (user.credits < 1) {
+            // Check for active subscription
+            let hasActiveSubscription = false;
+            if (user.subscription && user.subscription.status === 'active') {
+                const now = new Date();
+                if (
+                    (!user.subscription.start || user.subscription.start <= now) &&
+                    (!user.subscription.end || user.subscription.end >= now)
+                ) {
+                    hasActiveSubscription = true;
+                }
+            }
+            if (!hasActiveSubscription && user.credits < 1) {
                 return response.status(400).json({
                     code: 'INSUFFICIENT_FUNDS',
-                    message: "Insufficient Credits"
+                    message: 'Insufficient Credits'
                 });
             }
 
@@ -20,21 +32,24 @@ const linksController = {
                 campaignTitle: campaign_title,
                 originalUrl: original_url,
                 category: category,
+                thumbnail: thumbnail || '',
                 user: request.user.role === 'admin' ? request.user.id : request.user.adminId
             });
 
             await link.save();
 
-            user.credits -= 1;
-            await user.save();
+            if (!hasActiveSubscription) {
+                user.credits -= 1;
+                await user.save();
+            }
 
             response.status(200).json({
                 data: { id: link._id },
                 message: 'Link Created'
-            })
+            });
         } catch (error) {
             console.log(error);
-            return response.status(500).json({ error: "Internal server error" })
+            return response.status(500).json({ error: 'Internal server error' });
         }
     },
 
@@ -105,25 +120,29 @@ const linksController = {
         try {
             const linkId = request.params.id;
             if (!linkId) {
-                return response.status(401).json({ error: "Link id is required" });
+                return response.status(401).json({ error: 'Link id is required' });
             }
 
             let link = await Links.findById(linkId);
             if (!link) {
-                return response.status(404).json({ error: "Link does not exist with the given id" });
+                return response.status(404).json({ error: 'Link does not exist with the given id' });
             }
 
-            const { campaign_title, original_url, category } = request.body;
-            link = await Links.findByIdAndUpdate(linkId, {
+            const { campaign_title, original_url, category, thumbnail } = request.body;
+            const updateFields = {
                 campaignTitle: campaign_title,
                 originalUrl: original_url,
                 category: category
-            }, { new: true });
+            };
+            if (typeof thumbnail !== 'undefined') {
+                updateFields.thumbnail = thumbnail;
+            }
+            link = await Links.findByIdAndUpdate(linkId, updateFields, { new: true });
 
             response.json({ data: link });
         } catch (error) {
             console.log(error);
-            return response.status(500).json({ error: "Internal server error" })
+            return response.status(500).json({ error: 'Internal server error' });
         }
     },
 
@@ -237,7 +256,21 @@ const linksController = {
                 message: 'Internal server error'
             });
         }
-    }
+    },
+    createUploadSignature: async (request, response) => {
+        try {
+            const { signature, timestamp } = generateUploadSignature();
+            response.json({ 
+                signature:signature,
+                 timestamp:timestamp,
+                 apiKey: process.env.CLOUDINARY_API_KEY,
+                 cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+                 });
+        }catch (error) {
+            console.log(error);
+            return response.status(500).json({ error: "Internal server error" });
+        }
+    },
 };
 
 module.exports = linksController;

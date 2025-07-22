@@ -10,6 +10,7 @@ import { Modal } from "react-bootstrap";
 import { userPermissions } from "../../rbac/permissions";
 import { useNavigate } from "react-router-dom";
 
+
 function LinkDashboard() {
   const [errors, setErrors] = useState({});
   const [linksData, setLinksData] = useState([]);
@@ -23,15 +24,18 @@ function LinkDashboard() {
   const [isEdit, setIsEdit] = useState(false);
   const permission = userPermissions();
 
-  const [loading, setLoading]=useState(false);
-  const [searchTerm,setSearchTerm]=useState('');
-  const [currentPage,setCurrentPage]=useState(0);
-  const[pageSize, setPageSize]=useState(20);
-  const [totalCount,setTotalCount]=useState(0);
-   const [sortModal, setSortModal]=useState([
-    {field:'createdAt', sort: "desc"}]);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
 
-  
+  const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(20);
+  const [totalCount, setTotalCount] = useState(0);
+  const [sortModal, setSortModal] = useState([
+    { field: 'createdAt', sort: "desc" }]);
+
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
@@ -41,17 +45,17 @@ function LinkDashboard() {
     try {
       setLoading(true);
 
-      const sortField=sortModal[0]?.field || "createdAt";
-      const sortOrder=sortModal[0]?.sort || "desc";
-      const params={
+      const sortField = sortModal[0]?.field || "createdAt";
+      const sortOrder = sortModal[0]?.sort || "desc";
+      const params = {
         currentPage: currentPage,
-        pageSize: pageSize, 
+        pageSize: pageSize,
         searchTerm: searchTerm,
         sortField: sortField,
-        sortOrder:sortOrder
+        sortOrder: sortOrder
       };
       const response = await axios.get(`${serverEndpoint}/links`, {
-        params:params,
+        params: params,
         withCredentials: true,
       });
       setLinksData(response.data.data.links);
@@ -60,14 +64,14 @@ function LinkDashboard() {
       setErrors({
         message: "Unable to fetch links at the moment, please try again",
       });
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchLinks();
-  }, [currentPage,pageSize,sortModal,searchTerm]);
+  }, [currentPage, pageSize, sortModal, searchTerm]);
 
   // Debounce search input
   useEffect(() => {
@@ -88,14 +92,20 @@ function LinkDashboard() {
         campaignTitle: data.campaignTitle,
         originalUrl: data.originalUrl,
         category: data.category,
+        thumbnail: data.thumbnail || '',
       });
+      setPreviewUrl(data.thumbnail || '');
+      setThumbnailFile(null);
     } else {
       setFormData({
-        id: "",
-        campaignTitle: "",
-        originalUrl: "",
-        category: "",
+        id: '',
+        campaignTitle: '',
+        originalUrl: '',
+        category: '',
+        thumbnail: '',
       });
+      setPreviewUrl('');
+      setThumbnailFile(null);
     }
     setIsEdit(editMode);
     setShowModel(true);
@@ -161,10 +171,16 @@ function LinkDashboard() {
     e.preventDefault();
     if (!validate()) return;
 
+    let thumbnailUrl = formData.thumbnail || '';
+    if (thumbnailFile) {
+      thumbnailUrl = await uploadToCloudinary(thumbnailFile);
+    }
+
     const body = {
       campaign_title: formData.campaignTitle,
       original_url: formData.originalUrl,
       category: formData.category,
+      thumbnail: thumbnailUrl,
     };
 
     try {
@@ -192,7 +208,37 @@ function LinkDashboard() {
     }
   };
 
+  const uploadToCloudinary = async (file) => {
+    const { data } = await axios.post(
+      `${serverEndpoint}/links/generate-upload-signature`, {},
+      { withCredentials: true });
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("api_key", data.apiKey);
+    formData.append("timestamp", data.timestamp);
+    formData.append("signature", data.signature);
+    formData.append("folder", "AffiGlow");
+
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${data.cloudName}/image/upload`,
+      formData
+    );
+
+    return response.data.secure_url;
+  };
+
   const columns = [
+    {
+      field: 'thumbnail', headerName: 'Thumbnail', flex: 2, sortable: false,
+      renderCell: (params) => (
+        params.row.thumbnail ? (
+          <img src={params.row.thumbnail} alt="Thumbnail" style={{  maxHeight: '40px',}}/>
+        ) : (
+          <span style={{color: '#888'}}>No Image</span>
+        )
+      ) 
+  },
     { field: "campaignTitle", headerName: "Campaign", flex: 2 },
     {
       field: "originalUrl",
@@ -214,7 +260,7 @@ function LinkDashboard() {
       field: "action",
       headerName: "Action",
       flex: 1,
-      sortable:false,
+      sortable: false,
       renderCell: (params) => (
         <>
           {permission.canEditLink && (
@@ -236,17 +282,17 @@ function LinkDashboard() {
       ),
     },
     {
-      field:'share',
+      field: 'share',
       headerName: 'share Affiliate Link',
       sortable: false,
-      flex:1.5,
-      renderCell:(params)=>{
-        const  shareURL= `${serverEndpoint}/links/r/${params.row._id}`;
-        return(
+      flex: 1.5,
+      renderCell: (params) => {
+        const shareURL = `${serverEndpoint}/links/r/${params.row._id}`;
+        return (
           <button className="btn btn-outline-primary btn-sm"
-          onClick={(e)=>{
-            navigator.clipboard.writeText(shareURL);
-          }}
+            onClick={(e) => {
+              navigator.clipboard.writeText(shareURL);
+            }}
           >
             Copy
           </button>
@@ -268,7 +314,7 @@ function LinkDashboard() {
           </button>
         )}
       </div>
-      
+
 
       {errors.message && (
         <div className="alert alert-danger">{errors.message}</div>
@@ -328,8 +374,8 @@ function LinkDashboard() {
                   {field === "campaignTitle"
                     ? "Campaign Title"
                     : field === "originalUrl"
-                    ? "Original URL"
-                    : "Category"}
+                      ? "Original URL"
+                      : "Category"}
                 </label>
                 <input
                   type="text"
@@ -343,6 +389,34 @@ function LinkDashboard() {
                 )}
               </div>
             ))}
+            <div className="mb-3">
+  <label htmlFor="thumbnailFile" className="form-control">
+    Thumbnail
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setThumbnailFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+      }
+    }}
+    className="form-control"
+  />
+  {previewUrl && (
+    <div className="mt-2">
+      <img
+        src={previewUrl}
+        width="150"
+        alt="thumbnail-preview"
+        className="img-responsive border rounded-2"
+      />
+    </div>
+  )}
+</div>
+
             <div className="d-grid">
               <button type="submit" className="btn btn-primary">
                 Submit
