@@ -9,6 +9,7 @@ import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { userPermissions } from "../../rbac/permissions";
 import { useNavigate } from "react-router-dom";
+import Spinner from '../Spinner';
 
 
 function LinkDashboard() {
@@ -40,6 +41,8 @@ function LinkDashboard() {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState("");
   const debounceTimeout = useRef();
+  const [redirectLoading, setRedirectLoading] = useState(false);
+
 
   const fetchLinks = async () => {
     try {
@@ -246,9 +249,13 @@ function LinkDashboard() {
       flex: 3,
       renderCell: (params) => (
         <a
-          href={`${serverEndpoint}/links/r/${params.row._id}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="#"
+          onClick={async (e) => {
+            e.preventDefault();
+            setRedirectLoading(true);
+            window.location.href = `${serverEndpoint}/links/r/${params.row._id}`;
+          }}
+          style={{ cursor: 'pointer' }}
         >
           {params.row.originalUrl}
         </a>
@@ -356,6 +363,23 @@ function LinkDashboard() {
           sx={{ fontFamily: "inherit" }}
         />
       </div>
+
+      {redirectLoading && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          background: 'rgba(255,255,255,0.7)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <Spinner />
+        </div>
+      )}
 
       {/* Add/Edit Modal */}
       <Modal show={showModel} onHide={handlemodelClose}>
