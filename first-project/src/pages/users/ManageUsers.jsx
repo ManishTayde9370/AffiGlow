@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 import { Modal } from 'react-bootstrap';
 import { serverEndpoint } from '../../config';
+import Spinner from '../../components/Spinner';
 
 const USER_ROLES = ['viewer','developer'];
 
@@ -272,10 +273,9 @@ function ManageUsers(){
                         </div>
                         <div className='d-grid'>
                             {formLoading?(
-                                <button className='btn btn-primary' type='button' disabled="">
-                                    <span className='spinner-border spinner-border-sm' aria-hidden='true'/>
-                                    <span className='visually-hidden' role='status'>Loading...</span>
-                                </button>
+                                <div className='d-flex justify-content-center align-items-center' style={{height: '40px'}}>
+                                    <Spinner />
+                                </div>
                             ):(
                                 <button type='submit' className='btn btn-primary'>Submit</button>
                             )}
@@ -293,10 +293,9 @@ function ManageUsers(){
                             Cancel
                         </button>
                         {formLoading ? (
-                            <button className='btn btn-danger' type='button' disabled=''>
-                                <span className='spinner-border spinner-border-sm' aria-hidden='true'/>
-                                <span className='visually-hidden' role='status'>Loading...</span>
-                            </button>
+                            <div className='d-flex justify-content-center align-items-center' style={{height: '40px'}}>
+                                <Spinner />
+                            </div>
                         ):(
                             <button className='btn btn-danger' onClick={handleDeleteSubmit}>
                                 Delete

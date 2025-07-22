@@ -12,7 +12,7 @@ import Logout from "./pages/Logout";
 import Register from "./components/Register";
 import { useDispatch, useSelector } from "react-redux";
 import UserLayout from "./layout/UserLayout";
-import { Spinner } from "react-bootstrap";
+import Spinner from "./components/Spinner";
 import ManageUsers from "./pages/users/ManageUsers";
 import ProtectedRoute from "./rbac/ProtectedRoute";
 import UnauthorizedAccess from "./components/UnauthorizedAccess";
